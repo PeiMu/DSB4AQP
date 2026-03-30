@@ -64,6 +64,54 @@ bash ./export_csv_pg.sh 10
 # OR bash ./export_csv_pg.sh 100
 ```
 
+### prepare umbra
+
+create database
+```bash
+docker run -it \
+-v umbra-db:/var/db \
+-v /home/pei/Project/benchmarks/dsb-postgres:/benchmark \
+umbradb/umbra:latest \
+umbra-sql -createdb /var/db/dsb_10.db
+    
+\q
+```
+
+need to change the password
+```bash
+docker run -it -v umbra-db:/var/db umbradb/umbra:latest umbra-sql /var/db/dsb_10.db
+
+# Inside umbra-sql:
+> ALTER USER postgres PASSWORD 'postgres';
+\q
+```
+
+Restart the server
+```bash
+docker run --name umbra_dsb --network=host \
+    -v umbra-db:/var/db \
+    -v /home/pei/Project/benchmarks/dsb-postgres:/benchmark \
+    --ulimit nofile=1048576:1048576 \
+    --ulimit memlock=8388608:8388608 \
+    umbradb/umbra:latest \
+    umbra-server --address 0.0.0.0 \
+    --port 15432 /var/db/dsb_10.db
+```
+
+Then connect to confirm
+```bash
+psql -h localhost -p 15432 -U postgres # with the password `postgres`
+\q
+```
+
+Run scripts to setup
+```bash
+cd code/tools/ && conda activate dsb
+
+python ../../scripts/load_data_umbra.py 10
+psql -h localhost -p 15432 -U postgres -f ../../scripts/tpcds_ri_umbra.sql # postgres
+psql -h localhost -p 15432 -U postgres -f ../../scripts/dsb_index_mariadb.sql # postgres
+```
 
 ### prepare mariadb
 ```bash
