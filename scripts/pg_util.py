@@ -1,3 +1,4 @@
+import io
 import os
 import psycopg2
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
@@ -53,12 +54,17 @@ def execute(cursor, cmd, verbose = False):
 	except Exception as e:
 		print(e)
 
-def connect(user, password, db_name = None):
+def connect(user, password, db_name=None, host=None, port=None):
+	conn = None
 	try:
+		kwargs = dict(user=user, password=password)
 		if db_name is not None:
-			conn = psycopg2.connect(user=user, password=password, database=db_name)
-		else:
-			conn = psycopg2.connect(user=user, password=password)
+			kwargs['database'] = db_name
+		if host is not None:
+			kwargs['host'] = host
+		if port is not None:
+			kwargs['port'] = port
+		conn = psycopg2.connect(**kwargs)
 		conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
 
 	except Exception as e:
