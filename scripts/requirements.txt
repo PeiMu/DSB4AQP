@@ -1,2 +1,3 @@
 psycopg2
 simplejson
+mysql-connector-python
