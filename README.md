@@ -64,6 +64,75 @@ bash ./export_csv_pg.sh 10
 # OR bash ./export_csv_pg.sh 100
 ```
 
+
+### prepare mariadb
+```bash
+mariadb -u root -p # mariadb
+
+CREATE DATABASE dsb_10;
+CREATE USER 'dsb_10'@'localhost';
+GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, ALTER, REFERENCES, INDEX ON dsb_10.* TO 'dsb_10'@'localhost';
+FLUSH PRIVILEGES;
+
+sudo vi /etc/my.cnf
+# remove the max_statement_time
+
+cd code/tools/ && conda activate dsb
+python ../../scripts/load_data_mariadb.py 10
+mariadb -u dsb_10 -D dsb_10 < ../../scripts/tpcds_ri_mariadb.sql
+mariadb -u dsb_10 -D dsb_10 < ../../scripts/dsb_index_mariadb.sql
+mariadb -u dsb_10 -D dsb_10 < ../../scripts/analyze_mariadb_dsb_table.sql
+```
+
+#### Run these checks after the full setup:
+
+1. Row counts for all tables (compare against known TPC-DS SF=10 counts):
+```bash
+mariadb -u dsb_10 -D dsb_10 -e "
+SELECT table_name, table_rows
+FROM information_schema.tables
+WHERE table_schema = 'dsb_10'
+ORDER BY table_name;"
+```
+
+2. Check FK constraints were applied:
+```bash
+mariadb -u dsb_10 -D dsb_10 -e "
+SELECT table_name, constraint_name, referenced_table_name
+FROM information_schema.referential_constraints
+WHERE constraint_schema = 'dsb_10'
+ORDER BY table_name;"
+```
+
+3. Check indexes were created:
+```bash
+mariadb -u dsb_10 -D dsb_10 -e "
+SELECT table_name, index_name, column_name
+FROM information_schema.statistics
+WHERE table_schema = 'dsb_10'
+ORDER BY table_name, index_name;"
+```
+
+4. Spot-check NULLs are correct (a nullable FK column should have NULLs, not 0s):
+```bash
+mariadb -u dsb_10 -D dsb_10 -e "
+SELECT COUNT(*) as total,
+	 SUM(ss_sold_date_sk IS NULL) as null_date,
+	 SUM(ss_sold_date_sk = 0) as zero_date
+FROM store_sales;"
+null_date should be > 0 and zero_date should be 0 — confirming NULL handling worked correctly.
+```
+
+5. Quick sanity query (a real DSB query joining several tables):
+```bash
+mariadb -u dsb_10 -D dsb_10 -e "
+SELECT COUNT(*) FROM store_sales ss
+JOIN date_dim d ON ss.ss_sold_date_sk = d.d_date_sk
+JOIN store s ON ss.ss_store_sk = s.s_store_sk
+WHERE d.d_year = 2000;"
+Should return a non-zero count without errors.
+```
+
 ### prepare duckdb
 ```bash
 bash ./prepare_duckdb.sh 10
