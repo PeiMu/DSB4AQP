@@ -42,6 +42,11 @@ createdb dsb_10
 
 cd code/tools/
 
+psql -d dsb_10 # OR psql -d dsb_100
+# GRANT CREATE ON SCHEMA public TO postgres;
+# GRANT USAGE ON SCHEMA public TO postgres;
+# \q
+
 python ../../scripts/load_data_pg.py 10
 # OR python ../../scripts/load_data_pg.py 100
 psql -U postgres -d dsb_10 -f tpcds_ri.sql
