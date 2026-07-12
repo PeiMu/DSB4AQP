@@ -51,8 +51,8 @@ if create_table:
 for table in tables:
     file_path = os.path.join(data_path, table + '.dat')
     pg_util.execute(cursor, 'delete from ' + table + ';', verbose=True)
-    #pg_util.bulk_load_from_csv_file(cursor, file_path, tmp_csv_path, table, delimiter='|') # if dat is larger than memory
-    pg_util.load_from_csv_file(cursor, file_path, table, delimiter='|') # if dat is smaller than memory
+    pg_util.bulk_load_from_csv_file(cursor, file_path, tmp_csv_path, table, delimiter='|') # if dat is larger than memory
+    # pg_util.load_from_csv_file(cursor, file_path, table, delimiter='|') # if dat is smaller than memory
 
 os.remove(tmp_csv_path)
 
