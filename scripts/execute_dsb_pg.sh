@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ -z "$1" ]; then
-  echo "Please enter Official or QuerySplit!"
+  echo "Please enter qs_Official, qs_QuerySplit, or wo_multi_block!"
   exit 1
 fi
 
@@ -10,8 +10,8 @@ if [ -z "$2" ]; then
   exit 1
 fi
 
-dir_1="${PWD}/../code/tools/1_instance_out_qs_$1/1/"
-dir_2="${PWD}/../code/tools/1_instance_out_qs_$1/2/"
+dir_1="${PWD}/../code/tools/1_instance_out_$1/1/"
+dir_2="${PWD}/../code/tools/1_instance_out_$1/2/"
 iteration=1
 
 log_name=pg_dsb_$1.txt

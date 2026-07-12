@@ -54,7 +54,7 @@ for table in tables:
     pg_util.bulk_load_from_csv_file(cursor, file_path, tmp_csv_path, table, delimiter='|') # if dat is larger than memory
     # pg_util.load_from_csv_file(cursor, file_path, table, delimiter='|') # if dat is smaller than memory
 
-os.remove(tmp_csv_path)
+#os.remove(tmp_csv_path)
 
 cursor.close()
 conn.close()

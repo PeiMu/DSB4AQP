@@ -24,8 +24,8 @@ do
 done
 
 # execute queries with official duckdb to verify
-dir_1="${PWD}/../code/tools/1_instance_out/1/"
-dir_2="${PWD}/../code/tools/1_instance_out/2/"
+dir_1="${PWD}/../code/tools/1_instance_out_wo_multi_block/1/"
+dir_2="${PWD}/../code/tools/1_instance_out_wo_multi_block/2/"
 iteration=1
 
 rm -rf duckdb_dsb_$1_result/

@@ -8,7 +8,7 @@ if len(sys.argv) > 1:
     scale = sys.argv[1]
 
 db_name = r'dsb_' + str(scale) # database name
-bin_path = YOUR_POSTGRES_PATH # e.g, r'xxx/bin/postgres' # binary of Postgres
+bin_path = r'/home/pei/Project/project_bins/bin/postgres' # e.g, r'xxx/bin/postgres' # binary of Postgres
 sql_path = r'../../scripts/dsb_index_pg.sql'
 
 # start database service
