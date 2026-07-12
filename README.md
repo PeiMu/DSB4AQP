@@ -60,10 +60,12 @@ cd ../../scripts
 
 bash ./prepare_QuerySplit_queries.sh
 
-bash ./execute_dsb_pg.sh Official 10
-# OR bash ./execute_dsb_pg.sh Official 100
-bash ./execute_dsb_pg.sh QuerySplit 10
-# OR bash ./execute_dsb_pg.sh QuerySplit 100
+bash ./execute_dsb_pg.sh qs_Official 10
+# OR bash ./execute_dsb_pg.sh qs_Official 100
+bash ./execute_dsb_pg.sh qs_QuerySplit 10
+# OR bash ./execute_dsb_pg.sh qs_QuerySplit 100
+bash ./execute_dsb_pg.sh wo_multi_block 10
+# OR bash ./execute_dsb_pg.sh wo_multi_block 100
 
 bash ./export_csv_pg.sh 10
 # OR bash ./export_csv_pg.sh 100
