@@ -105,7 +105,9 @@ def generate_workload(workload_config):
 
 if db_engine == "postgres":
     workload_config_file = r'../../scripts/workload_config_1_instance_qs.json'
-else:
+elif db_engine == "duckdb":
     workload_config_file = r'../../scripts/workload_config_1_instance_wo_multi_block.json'
+else:
+    workload_config_file = r'../../scripts/workload_config_1_instance.json'
 workload_config = load_json(workload_config_file)
 generate_workload(workload_config)
