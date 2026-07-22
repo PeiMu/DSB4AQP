@@ -22,8 +22,21 @@ password = ''
 conn = pg_util.connect(user = user, password = password, db_name = db_name)
 cursor = conn.cursor()
 
-# create indexes
-pg_util.execute(cursor, open(sql_path, 'r').read(), verbose = True)
+pg_util.execute(cursor, "SET statement_timeout = 0;", verbose=True)
+pg_util.execute(cursor, "SET maintenance_work_mem = '1GB';", verbose=True)
+
+# create indexes one at a time
+import re
+import time
+sql = open(sql_path, 'r').read()
+stmts = [s.strip() for s in re.split(r';\s*\n', sql) if s.strip() and s.strip() != '--']
+for i, stmt in enumerate(stmts):
+    if not stmt.lower().startswith('create index'):
+        continue
+    t0 = time.time()
+    print(f'[{i+1}/{len(stmts)}] {stmt[:80]}...')
+    pg_util.execute(cursor, stmt, verbose=False)
+    print(f'  done in {time.time()-t0:.1f}s')
 
 cursor.close()
 conn.close()
