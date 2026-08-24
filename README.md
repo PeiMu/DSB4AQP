@@ -45,6 +45,8 @@ cd code/tools/
 psql -d dsb_10 # OR psql -d dsb_100
 # GRANT CREATE ON SCHEMA public TO postgres;
 # GRANT USAGE ON SCHEMA public TO postgres;
+# CREATE EXTENSION IF NOT EXISTS aqp_plan_export;
+# GRANT EXECUTE ON FUNCTION aqp_plan_nodestring(text) TO postgres;
 # \q
 
 python ../../scripts/load_data_pg.py 10
